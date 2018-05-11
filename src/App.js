@@ -1,21 +1,61 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Header, SearchField, FiltersWrapper } from './components';
 
-class App extends Component {
+export default class App extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      filterIsVisible: false,
+      filters: []
+    }
+  }
+
+  searchFieldChangeHandler = () => {
+    this.setState({
+      filterIsVisible: true
+    });
+  }
+
+  searchFieldSubmitHandler = (event) => {
+    event.preventDefault();
+    this.setState({
+      filterIsVisible: false
+    });
+  }
+
+  getStateFromFilters = (filters) => {
+    const JSONObj = JSON.stringify(filters)
+    this.setState({
+      filters: filters
+    });
+    console.log(JSONObj);
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div className="container">
+        {/* Header */}
+        <div className="row">
+          <Header />
+        </div>
+        {/* Search field */}
+        <div className="row">
+          <SearchField change={this.searchFieldChangeHandler} submit={this.searchFieldSubmitHandler} />
+        </div>
+        {
+          /* Conditional rendered overlay */
+          this.state.filterIsVisible &&
+          <FiltersWrapper unmount={this.getStateFromFilters} />
+        }
+        <div>
+          <pre>
+            {
+              this.state.filters.length !== 0 && JSON.stringify(this.state.filters)
+            }
+          </pre>
+        </div>
       </div>
     );
   }
-}
-
-export default App;
+};
